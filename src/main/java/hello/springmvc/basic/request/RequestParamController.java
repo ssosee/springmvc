@@ -110,7 +110,7 @@ public class RequestParamController {
     @ResponseBody
     @RequestMapping("/model-attribute-v1")
     public String modelAttributeV1(@ModelAttribute HelloData helloData) {
-        log.info("username = {}", helloData.getName());
+        log.info("username = {}", helloData.getUsername());
         log.info("age = {}", helloData.getAge());
 
         return "ok";
@@ -119,7 +119,7 @@ public class RequestParamController {
     @ResponseBody
     @RequestMapping("/model-attribute-v2")
     public String modelAttributeV2(HelloData helloData) {
-        log.info("username = {}", helloData.getName());
+        log.info("username = {}", helloData.getUsername());
         log.info("age = {}", helloData.getAge());
 
         return "ok";
