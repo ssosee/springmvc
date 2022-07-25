@@ -39,7 +39,7 @@ public class className {
 * @DeleteMapping
 * @PatchMapping
 
-*경로 변수(다중) 사용*
+### 경로 변수(다중) 사용
 ```java
 /**
  * PathVariable 사용
@@ -62,7 +62,7 @@ public String mappingPath(@PathVariable String userId, @PathVariable Long orderI
 }
 ```
 
-*특정 헤더 조건 매핑*
+### 특정 헤더 조건 매핑
 ```java
 /**
  * 특정 헤더로 추가 매핑
@@ -78,9 +78,18 @@ public String mappingHeader() {
 }
 ```
 
-*미디어 타입 조건 매핑*
+### 미디어 타입 조건 매핑
 
 *Content-Type, consume*
+
+`{"content-type": "application/json"}`
+* HTTP 메시지(요청, 응답 모두)에 담겨 보내는 데이터의 형식을 알려주는 헤더
+  * HTTP POST나 PUT처럼 메시지 Body에 데이터를 보낼때 필요로 함
+* Content-Type을 기준으로 HTTP 메시지에 담긴 데이터를 분석하여 파싱
+* 데이터를 전송하는 쪽에서 Content-Type 헤더가 없다면 데이터를 받는 입장에서는 단순히 텍스트 데이터로 받아들인다.
+* HTTP GET방식의 요청인 경우 무조건 URL끝에 쿼리스트링으로 value=text 형식으로 보내지기 때문에 Content-Type는 필요 없음
+* \<form> 태그를 통해 전송하는 경우라면 브라우저가 자동으로 Content-Type을 multipart/form-data로 설정하여 요청메시지를 보냄
+
 ```java
 /**
  * Content-Type 헤더 기반 추가 매핑 Media Type
@@ -100,8 +109,14 @@ public String mappingConsumes() {
      return "ok";
 }
 ```
+<br><br>
 
-*Content-Type, produce*
+*Accept, produce*
+
+`{"accept": "application/json"}`
+* 클라이언트에서 서버로 요청시 요청 메시지에 담기는 헤더
+* 자신에게 이러한 타입만 허용하겠다는 의미
+  * 클라이언트 요청 메시지의 Accept 헤더값을 application/json으로 설정했다면 json 데이터만 처리 할수 있다는 의미
 ```java
 /**
  * Accept 헤더 기반 Media Type
@@ -121,6 +136,18 @@ public String mappingProduces() {
      return "ok";
 }
 ```
+
+### 정리
+`Content-Type 헤더`와 `Accept 헤더` 둘다 **데이터 타입(MIME)**을 다루는 헤더
+
+`Conent-Type`은 현재 전송하는 데이터가 어떤 타입인지 설명하는 개념
+
+`Accept` 헤더는 클라이언트가 서버에게 어떤 특정한 데이터 타입을 보낼때 클라이언트가 보낸 특정 데이터 타입으로만 응답 해야함.
+
+<br><br>
+
+
+
 
 ## HTTP 요청 파라미터 - 쿼리 파라미터, HTML Form
 
