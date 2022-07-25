@@ -840,5 +840,64 @@ public class ResponseBodyController {
 
 
 ## 요청 매핑 핸들러 어댑터 구조
+HTTP 메시지 컨버터는 스프링 MVC 어디쯤에서 사용되는 것인가?!!!
 
-## 정리
+`@RequestMapping`을 처리하는 핸들러 어댑터인 `RequestMappingHandlerAdapter`(요청 매핑 핸들러 어댑터)에 있다.
+
+### RequestMappingHandlerAdapter 동작방식
+
+<img alt="RequestMappingHandlerAdapter 동작 방식.png" src="RequestMappingHandlerAdapter 동작 방식.png"/>
+
+**ArgumentResolver**
+애노테이션 기반의 컨트롤러는 매우 다양한 파라미터를 사용할수 있다.<br>
+`HttpServletRequest`, `Model`, `@RequestParam`, `@ModelAttribute`, `@RequestBody`, `HttpEntity` 같은 
+`HTTP 메시지`를 처리하는 부분까지 매우 큰 유연함을 갖고 있다.<br>
+이렇게 처리할 수 있는 이유가 바로 `ArgumentResolver` 덕분이다.!<br>
+
+애노테이션 기반 컨트롤러를 처리하는 `RequestMappingHandlerAdapter`는 바로
+`ArgumentResolver`를 호출해서 컨트롤러(핸들러)가 필요로 하는 다양한 파라미터의 값(객체)을 생성한다.
+
+**동작방식**
+1. `ArgumentResolver`의 `supporsParameter()`를 호출
+2. 해당 파라미터 지원 확인
+3. 지원하면 `resolveArgument()`호출하여 실제 객체 생성
+4. 생성된 객체가 컨트롤러 호출시 반환
+
+**ReturnValueHandler**
+
+`HandlerMethodReturnValueHandler`를 줄여서 `ReturnVlauteHandler`라 부른다.<br>
+`ArgumentResolver`와 비슷한데, 이것은 응답 값을 반환하고 처리한다.<br>
+컨트롤러에서 `String`으로 `뷰 이름`을 반환해도, 동작하는 이유가 *바로바로바로! `ReturnValueHandler` 덕분*이다.<br>
+
+스프링은 10여개가 넘는 ReturnValueHandler 를 지원한다.<br>
+예) `ModelAndView` , `@ResponseBody` , `HttpEntity` , `String`
+* https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-return-types
+<br><br>
+
+### HTTP 메시지 컨버터
+
+그렇다면,, `HTTP 메시지 컨버터`는 어디에 위치해 있는가?
+
+HTTP 메시지 컨버터를 사용하는 `@RequestBody` 도 컨트롤러가 필요로 하는 파라미터의 값에 사용된다.
+`@ResponseBody` 의 경우도 컨트롤러의 반환 값을 이용한다.
+
+<img alt="HTTP 메시지 컨버터.png" src="HTTP 메시지 컨버터.png"/>
+
+다음 2가지 경우에 대해섯 생각해보자.<br>
+<br>
+
+**요청**
+
+`@RequestBody` 를 처리하는 `ArgumentResolver` 가 있고, `HttpEntity` 를 처리하는
+`ArgumentResolver` 가 있다. 이 `ArgumentResolver` 들이 `HTTP 메시지 컨버터`를 사용해서 **필요한
+객체를 생성**하는 것이다.
+
+**웅답**
+
+`@ResponseBody` 와 `HttpEntity` 를 처리하는 `ReturnValueHandler` 가 있다. 그리고
+여기에서 HTTP 메시지 컨버터를 호출해서 응답 결과를 만든다.<br><br>
+
+### 스프링 MVC는 
+`@RequestBody`, `@ResponseBody` 가 있으면 
+`RequestResponseBodyMethodProcessor (ArgumentResolver)`
+`HttpEntity` 가 있으면 `HttpEntityMethodProcessor (ArgumentResolver)`를 사용한다.
