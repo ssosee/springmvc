@@ -919,7 +919,7 @@ HTTP 메시지 컨버터를 사용하는 `@RequestBody` 도 컨트롤러가 필�
 `ArgumentResolver` 가 있다. 이 `ArgumentResolver` 들이 `HTTP 메시지 컨버터`를 사용해서 **필요한
 객체를 생성**하는 것이다.
 
-**웅답**
+**응답**
 
 `@ResponseBody` 와 `HttpEntity` 를 처리하는 `ReturnValueHandler` 가 있다. 그리고
 여기에서 HTTP 메시지 컨버터를 호출해서 응답 결과를 만든다.<br><br>
